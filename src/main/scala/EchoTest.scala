@@ -1,5 +1,6 @@
+import java.io.{DataInputStream, DataOutputStream}
+import java.net.Socket
 import java.nio.ByteBuffer
-
 import scala.collection.mutable.ListBuffer
 import scala.io.StdIn
 
@@ -16,6 +17,15 @@ object EchoTest
 		val bufferSize = StdIn.readInt()
 		val buffer = ByteBuffer.allocateDirect(bufferSize)
 
+		try
+		{
+			val echoSocket = new Socket(host,echoPort)
+			val out = new DataOutputStream(echoSocket.getOutputStream)
+			val in = new DataInputStream(echoSocket.getInputStream)
+		}
+		catch(e:Exception)
+		{
 
+		}
 	}
 }
