@@ -172,7 +172,7 @@ object homework1 {
 	}
 	
 	def test4(host: String, port: Int): Array[Array[Long]] = {
-		var output = Array.ofDim[Long](3, 50)
+		val output = Array.ofDim[Long](3, 50)
 		
 		for (a <- output.indices) {
 			for (b <- output(a).indices) {
@@ -228,9 +228,53 @@ object homework1 {
 		output
 	}
 	
-	def test5(host: String,port:Int):Array[Array[Long]] = {
-		val output = new Array[Array[Long]](3)
+	def test5(host: String, port: Int): Array[Array[Long]] = {
+		val output = Array.ofDim[Long](3, 50)
+		val mByte = 1048576
 		
+		for (a <- output.indices) {
+			for (b <- output(a).indices) {
+				var validated = false
+				while (!validated) {
+					val msg = a match {
+						case 0 => (1024, 1024)
+						case 1 => (2048, 512)
+						case 2 => (4096, 256)
+					}
+					
+					val dChannel = DatagramChannel.open
+					dChannel.connect(new InetSocketAddress(host, port))
+					
+					val value = Random.nextBytes(mByte)
+					val key = Random.nextBytes(8)
+					val encoded = keyXor(value, key)
+					val response = ByteBuffer.wrap(new Array[Byte](8))
+					
+					val buffers = for (i <- 0 until msg._1) yield {
+						ByteBuffer.wrap(encoded slice(msg._2 * i, (msg._2 * i) + msg._2))
+					}
+					
+					println("Sending " + msg._1 + " messages of " + msg._2 + " length")
+					val sent = System.nanoTime
+					for (b <- buffers) {
+						dChannel.write(b)
+						
+					}
+					dChannel.read(response)
+					val received = System.nanoTime
+					dChannel.close
+					val code = response.getLong(0)
+					
+					if (code == 123456789) {
+						output(a)(b) = received - sent
+						println("Validated")
+						validated = true
+					}
+					else
+						println("Not validated")
+				}
+			}
+		}
 		output
 	}
 	
