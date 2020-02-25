@@ -1,8 +1,8 @@
-import java.io.{BufferedWriter, DataInputStream, DataOutputStream, FileWriter, IOException}
+import java.io.{BufferedWriter, DataInputStream, DataOutputStream, File, FileWriter, IOException}
 import java.net.{InetSocketAddress, Socket}
 import java.nio.ByteBuffer
 import java.nio.channels.{DatagramChannel, SocketChannel}
-
+import java.nio.file.Files
 
 import scala.io.StdIn
 import scala.util.Random
@@ -38,10 +38,10 @@ object homework1 {
 		}
 		
 		
-		val result1 = test1(host, tcpEcho)
-		val result2 = test2(host, udpEcho)
-		val result3 = test3(host, tcpEcho)
-		val result4 = test4(host, msgPortTcp)
+		//		val result1 = test1(host, tcpEcho)
+		//		val result2 = test2(host, udpEcho)
+		//		val result3 = test3(host, tcpEcho)
+		//		val result4 = test4(host, msgPortTcp)
 		val result5 = test5(host, msgPortUdp)
 		
 		val fields = Array("Test1-8", "Tes1-64", "Test1-1024", "Test2-8", "Test2-64", "Test-1024", "Test3-1k", "Test3-16k",
@@ -49,8 +49,10 @@ object homework1 {
 		
 		println("Enter path to save results.")
 		val path = StdIn.readLine
+		println("Enter name of file")
+		val name = StdIn.readLine
 		/*
-		val outFile = new BufferedWriter(new FileWriter(path))
+		val outFile = new BufferedWriter(new FileWriter(path + File.separator + name + ".csv"))
 		
 		for (i <- fields.indices) {
 			val list = i match {
